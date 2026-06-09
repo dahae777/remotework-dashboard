@@ -16,44 +16,22 @@
 
       /* 인쇄 및 PDF 저장용 최적화 스타일 */
      @media print {
-        @page {
-          size: A4 landscape; 
-          margin: 5mm 8mm; /* 상하 여백을 더 줄임 */
-        }
-        body { 
-          background-color: #ffffff !important; 
-          -webkit-print-color-adjust: exact; 
-          print-color-adjust: exact; 
-          padding: 0 !important; 
-          margin: 0 !important;
-          overflow: hidden; 
-        }
+
+        body { background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0 !important; }
+
         .shadow-sm, .shadow-md { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+
+        /* 인쇄 시 불필요한 필터박스 및 버튼 숨김 처리 */
+
         .no-print { display: none !important; }
-        
-        /* 1페이지 맞춤을 위한 여백 극한 압축 */
-        .max-w-7xl { max-width: 100% !important; width: 100% !important; }
-        .p-6 { padding: 0.5rem !important; } /* 헤더/차트 박스 안쪽 여백 대폭 축소 */
-        .p-5 { padding: 0.4rem !important; } /* 4개 요약 카드 안쪽 여백 대폭 축소 */
-        .mb-6 { margin-bottom: 0.3rem !important; } /* 박스 사이 간격 축소 */
-        .mt-8 { margin-top: 0.3rem !important; } /* 하단 텍스트 간격 축소 */
-        .gap-4 { gap: 0.3rem !important; }
-        
-        /* 글자 크기 강제 축소 */
-        h1 { font-size: 1.1rem !important; line-height: 1.3rem !important; margin-bottom: 0 !important; }
-        h2 { font-size: 1rem !important; margin-bottom: 0 !important; }
-        p, span { font-size: 0.75rem !important; line-height: 1rem !important; margin-top: 0 !important; }
-        
-        /* 요약 카드 안의 큰 수치(3xl, xl) 폰트 크기 축소 */
-        .text-3xl { font-size: 1.2rem !important; line-height: 1.2rem !important; }
-        .text-xl { font-size: 1rem !important; line-height: 1.2rem !important; }
-        
-        .grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 0.5rem !important; }
+
+        /* 요약 카드가 다음 페이지로 쪼개져 출력되는 현상 방지 */
+
         .grid > div { page-break-inside: avoid; }
-        
-        /* 차트 높이를 더 줄여서 다음 장으로 넘어가는 것을 원천 차단 */
-        .relative.h-\\[400px\\] { height: 230px !important; }
-        canvas { max-width: 100% !important; max-height: 230px !important; }
+
+        /* 차트 해상도 유지 및 크기 고정 */
+
+        canvas { max-width: 90% !important; height: auto !important; }
       }
       }
     </style>
