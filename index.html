@@ -293,4 +293,53 @@
           },
           options: {
             responsive: true,
-            maintain
+            maintainAspectRatio: false,
+            scales: {
+              y: { 
+                beginAtZero: true, 
+                max: 50, 
+                ticks: { padding: 10, callback: v => v + '%' },
+                grid: { color: '#f1f5f9', drawBorder: false }
+              },
+              x: {
+                grid: { display: false, drawBorder: false },
+                ticks: { padding: 10, font: { weight: '500' } }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleFont: { size: 14, family: "'Noto Sans KR', sans-serif" },
+                bodyFont: { size: 14, family: "'Noto Sans KR', sans-serif" },
+                padding: 12,
+                cornerRadius: 8,
+                callbacks: {
+                  label: function(context) { return ` 실행률: ${context.parsed.y.toFixed(1)}%`; }
+                }
+              }
+            },
+            animation: { duration: 800, easing: 'easeOutQuart' }
+          },
+          plugins: [{
+            id: 'guideLine',
+            afterDraw: chart => {
+              const {ctx, chartArea: {left, right}, scales: {y}} = chart;
+              const yVal = y.getPixelForValue(30);
+              ctx.save();
+              ctx.beginPath();
+              ctx.moveTo(left, yVal); ctx.lineTo(right, yVal);
+              ctx.lineWidth = 2; ctx.strokeStyle = '#ef4444';
+              ctx.setLineDash([5, 5]); ctx.stroke();
+              
+              ctx.fillStyle = '#ef4444'; 
+              ctx.font = 'bold 12px "Noto Sans KR", sans-serif';
+              ctx.fillText('🏆 권장 기준 (30%)', left + 10, yVal - 8);
+              ctx.restore();
+            }
+          }]
+        });
+      }
+    </script>
+  </body>
+</html>
