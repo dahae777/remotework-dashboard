@@ -133,13 +133,30 @@
           });
       };
 
-      function initialize(data) {
+     function initialize(data) {
         rawData = data;
         
-        // 🔴 1. 정렬 로직 강화: 글자 안에 있는 '숫자'의 실제 크기를 인식해서 똑똑하게 최신순(내림차순) 정렬
+        // 1. 영문 월 약어(May, Jun 등)를 숫자로 매핑하는 테이블
+        const monthMap = { 
+          jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, 
+          jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 
+        };
+        
+        // 2. "Jun-26" 형태의 문자열을 컴퓨터가 인식할 수 있는 실제 날짜(Date) 객체로 변환하는 함수
+        function parseMonthYear(str) {
+          const parts = String(str).toLowerCase().split('-');
+          if (parts.length !== 2) return new Date(0); // 형식이 맞지 않으면 가장 옛날 날짜 반환
+          
+          const month = monthMap[parts[0].trim()] || 1;
+          const year = parseInt('20' + parts[1].trim()); // "26"을 "2026"으로 변환
+          
+          return new Date(year, month - 1, 1); // 실제 날짜 객체 생성
+        }
+
+        // 3. 중복을 제거한 뒤, 글자 순서가 아닌 '실제 날짜 크기' 기준으로 완벽하게 최신순(내림차순) 정렬
         const months = [...new Set(data.map(item => String(item['기준월']).trim()))]
           .filter(Boolean)
-          .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+          .sort((a, b) => parseMonthYear(b) - parseMonthYear(a));
         
         const monthSelect = document.getElementById('monthSelect');
         monthSelect.innerHTML = ''; 
@@ -149,14 +166,17 @@
           option.value = month; 
           option.text = month;
           
-          // 🔴 2. 첫 번째(가장 최신) 월을 기본값으로 강제 선택
-          if (index === 0) option.selected = true; 
+          // 4. 정렬된 리스트 중 가장 첫 번째(가장 최신 달인 6월)를 기본값으로 강제 선택
+          if (index === 0) {
+            option.selected = true; 
+          }
           
           monthSelect.add(option);
         });
         
         updateDashboard(); 
       }
+      
       function parseExecutionRate(val) {
         if (val === undefined || val === null || val === '') return 0;
         let str = val.toString().trim();
