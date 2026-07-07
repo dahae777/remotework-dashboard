@@ -135,15 +135,27 @@
 
       function initialize(data) {
         rawData = data;
+        // 1. 데이터를 월 기준으로 중복 제거 후 최신순(내림차순) 정렬
         const months = [...new Set(data.map(item => String(item['기준월']).trim()))].filter(Boolean).sort().reverse();
         
         const monthSelect = document.getElementById('monthSelect');
         monthSelect.innerHTML = ''; 
-        months.forEach(month => {
+        
+        // 2. 드롭다운에 월 추가 및 첫 번째(가장 최신) 월을 기본값으로 강제 선택
+        months.forEach((month, index) => {
           let option = document.createElement('option');
-          option.value = month; option.text = month;
+          option.value = month; 
+          option.text = month;
+          
+          // 🟢 추가된 핵심 로직: 첫 번째 항목(최신 월)일 경우 selected 속성 부여
+          if (index === 0) {
+            option.selected = true; 
+          }
+          
           monthSelect.add(option);
         });
+        
+        // 3. 최신 월이 선택된 상태로 대시보드 화면 그리기 실행
         updateDashboard(); 
       }
 
